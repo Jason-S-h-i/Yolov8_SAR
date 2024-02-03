@@ -1,0 +1,23 @@
+#path & file
+path: ../datasets/SAR-AIRcraft-1.0-yolo
+train: images/train
+val: images/val
+test: images/test
+
+# Classes
+names:
+  0: A220
+  1: A320/321
+  2: A330
+  3: ARJ21
+  4: Boeing737
+  5: Boeing787
+  6: other
+
+
+
+
+
+
+
+
