@@ -2,8 +2,9 @@ from ultralytics import YOLO
 
 # defalut.yaml imgsz change
 
-path_pretrained_model = "./ultralytics/assets/yolov8n.pt"
-path_test_img = "./ultralytics/assets/bus.jpg"
+train_model = 'yolov8m.pt'
+epochs = 500
+imgsz = 1500
 
 # 从头开始创建一个新的YOLO模型
 # model = YOLO('yolov8n.yaml')
@@ -12,20 +13,20 @@ path_test_img = "./ultralytics/assets/bus.jpg"
 if __name__ == "__main__":# 多进程要放入main函数中
 
     # 加载预训练的YOLO模型（推荐用于训练）
-    model = YOLO(path_pretrained_model)
+    model = YOLO(train_model)
 
     # 使用“coco128.yaml”数据集训练模型3个周期
-    results = model.train(data='SAR-AIRcraft-1.0-yolo.yaml', epochs=10)
+    results = model.train(data='SAR-AIRcraft-1.0-yolo.yaml', epochs=epochs, imgsz=imgsz)
 
-# 评估模型在验证集上的性能
-# results = model.val()
+    # 评估模型在验证集上的性能
+    results = model.val()
 
-# 使用模型对图片进行目标检测
-# results = model(path_test_img)
+    # 使用模型对图片进行目标检测
+    # results = model(path_test_img)
 
 
-# 将模型导出为ONNX格式
-# success = model.export(format='onnx')
+    # 将模型导出为ONNX格式
+    success = model.export(format='onnx')
 
 # 测试脚本
 # from ultralytics import YOLO
