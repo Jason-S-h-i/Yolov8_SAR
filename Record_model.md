@@ -2,11 +2,16 @@
 此文件记录整个毕设过程中模型训练的参数选择和模型结构变化
 
 # 第一次
-模型文件名：train1_0212
+模型文件名：1_0212_train
 
 epoch=300
+
 model=yolov8s.pt
+
 datasets=SAR-AIRcraft-1.0-yolo
+
+batchsize=8
+
 
 新加入功能：
 - 实现对指定模型的训练
@@ -28,10 +33,36 @@ datasets=SAR-AIRcraft-1.0-yolo
 4. 打印数据写入一个文件夹内
 
 # 第二次
-（计划）使用yolov8n迁移训练
+使用yolov8n迁移训练
+
+模型文件名：2_0228_train
+
+epoch=1000
+
+model=yolov8n.pt
+
+datasets=SAR-AIRcraft-1.0-yolo
+
+batchsize=8
+
+
+训练结果：
+
+最终在训练了297个epochs后，模型精度无提升。
 
 # 第三次
 （计划）新建全新的yolov8n训练
+
+模型文件名：3_0229_train
+
+epoch=1000
+
+model=yolov8s.pt
+
+datasets=SAR-AIRcraft-1.0-yolo
+
+batchsize=8
+
 
 # 第四次
 （计划）使用yolov9的一个模型训练

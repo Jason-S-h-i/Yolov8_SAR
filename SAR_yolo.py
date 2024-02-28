@@ -5,12 +5,13 @@ from ultralytics import YOLO
 # defalut.yaml imgsz change
 
 project = 'runs'  # 保存训练的输出
-train_name = 'detect\\2_0228_train'  # project下的子文件夹 保存logs和训练的输出
-val_name = 'detect\\2_0228_val'  # project下的子文件夹 保存logs和训练的输出
-train_model = '..\\model\\yolov8n.pt'
+train_name = 'detect\\3_0229_train'  # project下的子文件夹 保存logs和训练的输出
+val_name = 'detect\\3_0229_val'  # project下的子文件夹 保存logs和训练的输出
+# train_model = '..\\model\\yolov8n.pt'  # transfer
+train_model = 'yolov8n.yaml'  # origin
 epochs = 1000
-imgsz = 1500
-batch_size = 24
+imgsz = 1504
+batch_size = 8
 save_period = 20  # 保存模型的频次
 
 # 从头开始创建一个新的YOLO模型
@@ -22,7 +23,7 @@ if __name__ == "__main__":  # 多进程要放入main函数中
     # 加载预训练的YOLO模型（推荐用于训练）
     model = YOLO(train_model)
 
-    # 使用“coco128.yaml”数据集训练模型3个周期
+    # 训练模型
     results = model.train(data='SAR-AIRcraft-1.0-yolo.yaml', epochs=epochs, batch=batch_size, imgsz=imgsz, device=0,
                           save_period=save_period, project=project, name=train_name, plots=True)
 
