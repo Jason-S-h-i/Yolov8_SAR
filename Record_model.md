@@ -12,6 +12,8 @@ datasets=SAR-AIRcraft-1.0-yolo
 
 batchsize=8
 
+imgsz = 1504
+
 
 新加入功能：
 - 实现对指定模型的训练
@@ -45,24 +47,45 @@ datasets=SAR-AIRcraft-1.0-yolo
 
 batchsize=8
 
+imgsz = 1504
 
 训练结果：
 
 最终在训练了297个epochs后，模型精度无提升。
 
 # 第三次
-（计划）新建全新的yolov8n训练
+新建全新的yolov8n训练
 
 模型文件名：3_0229_train
 
 epoch=1000
 
-model=yolov8s.pt
+model=yolov8n.yaml
 
 datasets=SAR-AIRcraft-1.0-yolo
 
 batchsize=8
 
+imgsz = 1504
+
+训练结果：
+
+最终在训练了354个epochs后，模型精度无提升。与迁移训练的epochs次数相差不大，测试精度未对比
 
 # 第四次
+采用yolov8n迁移训练，并修改了图片大小，在接下来的几次训练中会依次训练，imgsz逐步增大，并对比
+
+模型文件名：3_0229_train
+
+epoch=400
+
+model=yolov8n.pt
+
+datasets=SAR-AIRcraft-1.0-yolo
+
+batchsize=8
+
+imgsz = 640
+
+# 第五次
 （计划）使用yolov9的一个模型训练
