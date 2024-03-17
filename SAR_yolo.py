@@ -5,17 +5,17 @@ from ultralytics import YOLO
 # defalut.yaml imgsz change
 
 project = 'runs'  # 保存训练的输出
-train_name = 'detect\\4_0301_train'  # project下的子文件夹 保存logs和训练的输出
-val_name = 'detect\\4_0301_val'  # project下的子文件夹 保存logs和训练的输出
+train_name = 'detect\\5_0302_train'  # project下的子文件夹 保存logs和训练的输出
+val_name = 'detect\\5_0302_val'  # project下的子文件夹 保存logs和训练的输出
 train_model_path = '..\\model\\yolov8n.pt'  # transfer
-val_model_path = '.\\' + project + train_name + '\\weights\\best.pt'
+val_model_path = '.\\' + project + '\\' + train_name + '\\weights\\best.pt'
 # train_model = 'yolov8n.yaml'  # origin
-epochs = 400
-imgsz = 640
-batch_size = 8
+epochs = 500
+imgsz = 960  # 1280
+batch_size = 16
 save_period = 20  # 保存模型的频次
 
-# 从头开始创建一个新的YOLO模型
+# 从头开始创建一个新的YOLO
 # model = YOLO('yolov8n.yaml')
 # model.info()
 
@@ -29,14 +29,11 @@ if __name__ == "__main__":  # 多进程要放入main函数中
 
     val_model = YOLO(val_model_path)
     # 评估模型在验证集上的性能
-    val_results = val_model.val(data='SAR-AIRcraft-1.0-yolo.yaml', batch=batch_size, imgsz=imgsz, iou=0.7, conf=0.3,
+    val_results = val_model.val(data='SAR-AIRcraft-1.0-yolo.yaml', batch=batch_size, imgsz=imgsz, iou=0.7, conf=0.2,
                                 device=0, project=project, name=val_name, plots=True, split='test')
 
-    # 使用模型对图片进行目标检测
-    # test_results = model(path_test_img)
-
     # 将模型导出为ONNX格式
-    success = train_model.export(format='onnx')
+    # success = train_model.export(format='onnx')
 
 # 测试脚本
 # from ultralytics import YOLO

@@ -73,11 +73,62 @@ imgsz = 1504
 最终在训练了354个epochs后，模型精度无提升。与迁移训练的epochs次数相差不大，测试精度未对比
 
 # 第四次
-采用yolov8n迁移训练，并修改了图片大小，在接下来的几次训练中会依次训练，imgsz逐步增大，并对比
+采用yolov8n迁移训练，在接下来的几次训练中会依次训练修改imgsz之后，对模型的影响，并对比
 
-模型文件名：3_0229_train
+模型文件名：4_0301_train
 
-epoch=400
+epoch=500
+
+model=yolov8n.pt
+
+datasets=SAR-AIRcraft-1.0-yolo
+
+batchsize=32
+
+imgsz = 640
+
+最终在训练了402个epochs后，模型精度无提升。
+
+# 第五次
+采用yolov8n迁移训练，imgsz变化
+
+模型文件名：5_0302_train
+
+epoch=500
+
+model=yolov8n.pt
+
+datasets=SAR-AIRcraft-1.0-yolo
+
+batchsize=16
+
+imgsz = 1280
+
+最终在训练了353个epochs后，模型精度无提升。
+
+# 第六次
+采用yolov8n迁移训练，imgsz变化
+
+模型文件名：6_0302_train
+
+epoch=500
+
+model=yolov8n.pt
+
+datasets=SAR-AIRcraft-1.0-yolo
+
+batchsize=16
+
+imgsz = 960
+
+最终在训练了292个epochs后，模型精度无提升。
+
+# 第七次
+在头部采取了DCN替代了传统的Conv
+
+模型文件名：7_0317_train
+
+epoch=500
 
 model=yolov8n.pt
 
@@ -87,5 +138,8 @@ batchsize=8
 
 imgsz = 640
 
-# 第五次
+# 第八次
+改变DCN内部部分结构
+
+# 第九次
 （计划）使用yolov9的一个模型训练
