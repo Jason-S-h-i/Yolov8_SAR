@@ -40,6 +40,7 @@ from ultralytics.nn.modules import (
     ResNetLayer,
     RTDETRDecoder,
     Segment,
+    SA,
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -733,6 +734,10 @@ def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
 
 def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
     """Parse a YOLO model.yaml dictionary into a PyTorch model."""
+    """
+    d:yaml文件以字典的形式读入
+    ch:模型通道数
+    """
     import ast
 
     # Args
@@ -741,6 +746,9 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
     depth, width, kpt_shape = (d.get(x, 1.0) for x in ("depth_multiple", "width_multiple", "kpt_shape"))
     if scales:
         scale = d.get("scale")
+        """
+        判断scales，若有，直接获取；没有，发出警告，默认加一个n。写yaml文件时直接写yolov8n就不会有警告。
+        """
         if not scale:
             scale = tuple(scales.keys())[0]
             LOGGER.warning(f"WARNING ⚠️ no model scale passed. Assuming scale='{scale}'.")
@@ -757,12 +765,37 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
     layers, save, c2 = [], [], ch[-1]  # layers, savelist, ch out
     for i, (f, n, m, args) in enumerate(d["backbone"] + d["head"]):  # from, number, module, args
         m = getattr(torch.nn, m[3:]) if "nn." in m else globals()[m]  # get module
+        """
+        首先，检查m是否包含nn.
+        是，从torch.nn中获取该字符串对应的属性或类
+        否，从当前的全局命名空间中查找与m对应的值
+        """
+        """
+        下面这个for循环为解析模块参数，尝试将它们从字符串变量转换为实际的值或变量
+        """
         for j, a in enumerate(args):
-            if isinstance(a, str):
+            """
+            args 当前模块的参数列表
+            j 当前参数的索引
+            a 参数的值
+            """
+            if isinstance(a, str):  # 检查当前参数a中是否有字符串类型
+                """
+                抑制内部代码块中的ValueError异常，如果下面的代码引发了ValueError，他不会停止程序的执行，程序会继续运行
+                """
                 with contextlib.suppress(ValueError):
                     args[j] = locals()[a] if a in locals() else ast.literal_eval(a)
+                    """
+                    检查当前的局部变量(通过locals()函数)中是否存在名为a的变量
+                    若存在，将使用该局部变量的值替换args列表中的当前参数。
+                    若不存在，它将尝试使用ast.literal_eval来解析a
+                    """
 
         n = n_ = max(round(n * depth), 1) if n > 1 else n  # depth gain
+        """
+        下面这段if语句块的主要目的就是根据不同的m值(代表不同的模块)调整args列表的值
+        根据不同的模块，进行提取、重新排列或添加参数以满足不同模块的需求
+        """
         if m in (
             Classify,
             Conv,
@@ -787,10 +820,24 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             RepC3,
         ):
             c1, c2 = ch[f], args[0]
+            """
+            如果m是上面的其中一个模块
+            从列表ch中取出索引为f的元素赋给c1，c1输入通道
+            从args的第一个元素并赋值给c2，c2输出通道
+            """
             if c2 != nc:  # if c2 not equal to number of classes (i.e. for Classify() output)
                 c2 = make_divisible(min(c2, max_channels) * width, 8)
+            """
+            c2不等于nc(定义的类别数)时,与width相乘后，使用make_divisible确保其为c2的倍数，若不是则会变为8的倍数
+            """
 
             args = [c1, c2, *args[1:]]
+            """
+            更新args列表，插入c1 c2，去除了第0个元素，保留了剩下的
+            *args[1:]：使用了解包操作
+            *表示将这些元素解包并直接插入到新列表中
+            传入参数的手段，后面很多的都类似
+            """
             if m in (BottleneckCSP, C1, C2, C2f, C3, C3TR, C3Ghost, C3x, RepC3):
                 args.insert(2, n)  # number of repeats
                 n = 1
@@ -814,20 +861,31 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
                 args[2] = make_divisible(min(args[2], max_channels) * width, 8)
         elif m is RTDETRDecoder:  # special case, channels arg must be passed in index 1
             args.insert(1, [ch[x] for x in f])
+        elif m is SA:
+            args = [ch[f], *args]
         else:
             c2 = ch[f]
 
+        # 根据n的值创建新的模块m_。n>1，创建一个sequential来包含若干重复模块；否则，只创建一个单独的模块
         m_ = nn.Sequential(*(m(*args) for _ in range(n))) if n > 1 else m(*args)  # module
+        # 提取m中模块的名字或类型，存储在t中。删除模块前额外的字符，使模块名更清晰
         t = str(m)[8:-2].replace("__main__.", "")  # module type
+        # 计算m_的总参数量，并存储在m.np中。numel()返回一个张量中元素数，用于参数统计
         m.np = sum(x.numel() for x in m_.parameters())  # number params
+        # 给模块m_的附加属性：索引i、来源索引f和模块类型t
         m_.i, m_.f, m_.type = i, f, t  # attach index, 'from' index, type
+        # 上面四句话打印输出为日志
         if verbose:
             LOGGER.info(f"{i:>3}{str(f):>20}{n_:>3}{m.np:10.0f}  {t:<45}{str(args):<30}")  # print
+        # 将需要保存的层的索引追加到save列表中。如果f是一个整数，他首先被转换为一个单元素列表。只有那些不为-1的索引才被追加到save列表中
         save.extend(x % i for x in ([f] if isinstance(f, int) else f) if x != -1)  # append to savelist
-        layers.append(m_)
+        layers.append(m_)  # 将模块m_追加到layer列表中
         if i == 0:
             ch = []
         ch.append(c2)
+    """
+    返回包含所有层的模块，以及一个已经排序的save列表
+    """
     return nn.Sequential(*layers), sorted(save)
 
 

@@ -4,6 +4,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.parameter import Parameter
 
 from .conv import Conv, DWConv, GhostConv, LightConv, RepConv
 from .transformer import TransformerBlock
@@ -27,6 +28,7 @@ __all__ = (
     "Proto",
     "RepC3",
     "ResNetLayer",
+    "SA",
 )
 
 
@@ -390,3 +392,59 @@ class ResNetLayer(nn.Module):
     def forward(self, x):
         """Forward pass through the ResNet layer."""
         return self.layer(x)
+
+
+class SA(nn.Module):
+    """Shuffle Attention"""
+
+    def __init__(self, c, g=64):
+        """Initialize Shuffle Attention. c must bigger than 2*g, otherwise reduce the groups"""
+        """Because of yolo8n, we need try g= 8 16 32,to find a proper parameter"""
+        super().__init__()
+        self.groups = g
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+
+        self.cweight = Parameter(torch.zeros(1, c // (2 * g), 1, 1))
+        self.cbias = Parameter(torch.ones(1, c // (2 * g), 1, 1))
+        self.sweight = Parameter(torch.zeros(1, c // (2 * g), 1, 1))
+        self.sbias = Parameter(torch.ones(1, c // (2 * g), 1, 1))
+
+        self.sigmoid = nn.Sigmoid()
+        self.gn = nn.GroupNorm(c // (2 * g), c // (2 * g))
+
+    def channel_shuffle(self, x, groups):
+        # 这个shuffle的方法很好地利用了矩阵变形的性质
+        b, c, h, w = x.shape
+
+        x = x.reshape(b, groups, -1, h, w)  # b,c,h,w->b,g,c/g,h,w
+        x = x.permute(0, 2, 1, 3, 4)  # b,g,c/g,h,w->b,c/g,g,h,w
+
+        # flatten
+        x = x.reshape(b, -1, h, w)  # b,g,c/g,h,w->b,c,h,w
+
+        return x
+
+    def forward(self, x):
+        """Forward pass of Shuffle Attention."""
+        b, c, h, w = x.shape
+
+        x = x.reshape(b * self.groups, -1, h, w)  # b,c->b*g,c/g
+        x_0, x_1 = x.chunk(2, dim=1)  # 切块 b*g,c/g->b*g,c/2g and b*g,c/2g
+
+        # channel attention
+        xn = self.avg_pool(x_0)
+        xn = self.cweight * xn + self.cbias
+        xn = x_0 * self.sigmoid(xn)
+
+        # spatial attention
+        xs = self.gn(x_1)
+        xs = self.sweight * xs + self.sbias
+        xs = x_1 * self.sigmoid(xs)
+
+        # concatenate along channel axis
+        out = torch.cat([xn, xs], dim=1)  # b*g,c/2g and b*g,c/2g->b*g,c/g
+        out = out.reshape(b, -1, h, w)  # b*g,c/g->b,c
+
+        out = self.channel_shuffle(out, 2)
+
+        return out

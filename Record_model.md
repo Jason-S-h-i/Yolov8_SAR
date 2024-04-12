@@ -138,8 +138,43 @@ batchsize=8
 
 imgsz = 640
 
+训练结果：训练损失上下乱跳，模型不收敛
+
+结论：解耦头部分的网络结构不要轻易替换
+
 # 第八次
-改变DCN内部部分结构
+将Neck部分中降采样FPN中的conv替换为ghostconv
+
+yolov8n_my_v1.yaml
+
+模型文件名：8_0412_train
+```python
+train_name = 'detect\\8_0412_train'
+train_model = model='yolov8n_my_v1.yaml'
+epochs = 700
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：
+
+结论：
+
+
+# 添加模块方法
+在ultralytics/nn/modules对应的文件下加入模块，以block为例。
+
+在block.py中加入class SA
+
+在block.py中的__all__加入"SA"的声明
+
+在__init__.py中，from...import...中的import导入SA；并且在__all__加入"SA"的声明
+
+在ultralytics/nn/tasks.py文件首from ultralytics.nn.modules import 加入对应模块
+
+在parse_model函数中添加elif语句来添加对应模块的参数，加入到arg中
+
+在ultralytics/cfg/models/v8/yolov8.yaml中加入对应模块。args为在class中声明的默认参数
 
 # 第九次
 （计划）使用yolov9的一个模型训练

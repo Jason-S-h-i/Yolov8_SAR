@@ -7,6 +7,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision.ops import DeformConv2d
 
 __all__ = (
     "Conv",
@@ -334,54 +335,15 @@ class Concat(nn.Module):
         """Forward pass for the YOLOv8 mask Proto module."""
         return torch.cat(x, self.d)
 
+
 class DConv2d(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, deformable_groups=1):
-        super(DConv2d, self).__init__()
-        self.kernel_size = kernel_size
-        self.offset_conv = nn.Conv2d(in_channels, deformable_groups * kernel_size * kernel_size * 2,
-                                     kernel_size=kernel_size, stride=stride, padding=padding, dilation=dilation)
-        self.conv = nn.Conv2d(in_channels * kernel_size * kernel_size, out_channels, kernel_size=kernel_size, stride=1, padding=1,
-                              dilation=dilation)
+    def __init__(self, c1, c2, k=3, s=1, p=1, g=1):
+        super().__init__()
+        self.dcn = DeformConv2d(in_channels=c1, out_channels=c2, kernel_size=k, stride=s, padding=p, groups=g)
+        self.conv = nn.Conv2d(c1, 2 * g * k * k, k, s, padding=p, groups=1, dilation=1, bias=False)
 
     def forward(self, x):
-        offset = self.offset_conv(x)
-        N, C, H, W = offset.size()
-        C = C // 2
-        offset = offset.view(N, H, W, 2, C)  # [N, H, W, 2, C]
-
-        # Generate grid
-        grid_y, grid_x = torch.meshgrid(torch.arange(0, H), torch.arange(0, W), indexing='ij')
-        grid_y = grid_y.float().to(x.device)
-        grid_x = grid_x.float().to(x.device)
-
-        # Add offset to grid
-        grid_y = grid_y.unsqueeze(0).unsqueeze(0).unsqueeze(0).expand(N, C, -1, -1, -1).reshape(N, H, W, -1, C)   # [N, H, W, 1, C]
-        grid_x = grid_x.unsqueeze(0).unsqueeze(0).unsqueeze(0).expand(N, C, -1, -1, -1).reshape(N, H, W, -1, C)
-
-        bias_x, bias_y = torch.meshgrid(
-            torch.arange(-(self.kernel_size-1)//2, (self.kernel_size-1)//2+1),
-            torch.arange(-(self.kernel_size-1)//2, (self.kernel_size-1)//2+1), indexing='ij')
-        # (2N, 1)
-        bias = torch.cat([torch.flatten(bias_x), torch.flatten(bias_y)], 0).float()    # [C*2]
-
-        for i in range(C):
-            offset_x = offset[:, :, :, 0, i].unsqueeze(-1)
-            offset_y = offset[:, :, :, 1, i].unsqueeze(-1)
-
-            offset_x = offset_x + grid_x[:, :, :, :, i] + bias[i]
-            offset_y = offset_y + grid_y[:, :, :, :, i] + bias[i + C]
-
-            offset_x = offset_x * 2 / (H - 1) - 1
-            offset_y = offset_y * 2 / (W - 1) - 1
-
-            offset_x = torch.clamp(offset_x, -1, 1)  # [N, H, W, 1]
-            offset_y = torch.clamp(offset_y, -1, 1)
-
-            grid = torch.cat((offset_x, offset_y), dim=3)  # [N, H, W, 2]
-            # x_in = x[:, [i*2, i*2+1], :, :]  # [N, 2, H, W]
-            x_deformable = F.grid_sample(x, grid, align_corners=True)  # x=NCHinWin grid=NHoutWout2 OUTPUT=NCHoutWout
-            if i == 0:
-                x_out = x_deformable
-            else:
-                x_out = torch.cat((x_out, x_deformable), dim=1)
-        return self.conv(x_out)
+        # offset = torch.clamp(self.conv(x), 0, 1)
+        offset = self.conv(x)
+        result = self.dcn(x, offset)
+        return result

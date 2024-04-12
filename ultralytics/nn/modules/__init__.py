@@ -36,6 +36,7 @@ from .block import (
     Proto,
     RepC3,
     ResNetLayer,
+    SA,
 )
 from .conv import (
     CBAM,
@@ -114,4 +115,5 @@ __all__ = (
     "MLP",
     "ResNetLayer",
     "OBB",
+    "SA",
 )
