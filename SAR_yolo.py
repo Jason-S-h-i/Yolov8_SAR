@@ -4,12 +4,20 @@ from ultralytics import YOLO
 
 # defalut.yaml imgsz change
 
+'''
+每次训练前检查：
+输出文件夹名
+训练模型名
+epochs
+batch_size
+'''
+
 project = 'runs'  # 保存训练的输出
-train_name = 'detect\\8_0412_train'  # project下的子文件夹 保存logs和训练的输出
-val_name = 'detect\\8_0412_val'  # project下的子文件夹 保存logs和训练的输出
+train_name = 'detect\\10_0413_train'  # project下的子文件夹 保存logs和训练的输出
+val_name = 'detect\\10_0413_val'  # project下的子文件夹 保存logs和训练的输出
 train_model_path = '..\\model\\yolov8n.pt'  # transfer
 val_model_path = '.\\' + project + '\\' + train_name + '\\weights\\best.pt'
-train_model = './ultralytics/cfg/models/v8/yolov8n_my_v1.yaml'  # origin
+train_model = './ultralytics/cfg/models/v8/yolov8n_my_v3.yaml'  # origin
 epochs = 700
 imgsz = 640
 batch_size = 8
@@ -24,7 +32,7 @@ if __name__ == "__main__":  # 多进程要放入main函数中
     # 加载预训练的YOLO模型（推荐用于训练）
     train_model = YOLO(train_model)
     # 训练模型
-    results = train_model.train(data='SAR-AIRcraft-1.0-test.yaml', epochs=epochs, batch=batch_size, imgsz=imgsz, device=0,
+    results = train_model.train(data='SAR-AIRcraft-1.0-yolo.yaml', epochs=epochs, batch=batch_size, imgsz=imgsz, device=0,
                           save_period=save_period, project=project, name=train_name, plots=True, verbose=False)
 
     val_model = YOLO(val_model_path)
