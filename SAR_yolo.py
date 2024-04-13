@@ -12,6 +12,7 @@ epochs
 batch_size
 '''
 
+mode_val = True
 project = 'runs'  # 保存训练的输出
 train_name = 'detect\\10_0413_train'  # project下的子文件夹 保存logs和训练的输出
 val_name = 'detect\\10_0413_val'  # project下的子文件夹 保存logs和训练的输出
@@ -34,18 +35,13 @@ if __name__ == "__main__":  # 多进程要放入main函数中
     # 训练模型
     results = train_model.train(data='SAR-AIRcraft-1.0-yolo.yaml', epochs=epochs, batch=batch_size, imgsz=imgsz, device=0,
                           save_period=save_period, project=project, name=train_name, plots=True, verbose=False)
+    if mode_val:
+        val_model = YOLO(val_model_path)
+        # 评估模型在验证集上的性能
+        val_results = val_model.val(data='SAR-AIRcraft-1.0-yolo.yaml', batch=batch_size, imgsz=imgsz, iou=0.7, conf=0.2,
+                                    device=0, project=project, name=val_name, plots=True, split='test', half=False)
 
-    val_model = YOLO(val_model_path)
-    # 评估模型在验证集上的性能
-    val_results = val_model.val(data='SAR-AIRcraft-1.0-yolo.yaml', batch=batch_size, imgsz=imgsz, iou=0.7, conf=0.2,
-                                device=0, project=project, name=val_name, plots=True, split='test', half=False)
 
     # 将模型导出为ONNX格式
     # success = train_model.export(format='onnx')
 
-# 测试脚本
-# from ultralytics import YOLO
-# path_pretrained_model = "./ultralytics/assets/yolov8n.pt"
-# path_test_img = "./ultralytics/assets/bus.jpg"
-# model = YOLO(path_pretrained_model)
-# results = model(path_test_img)

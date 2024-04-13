@@ -3,7 +3,7 @@
 
 # 第一次
 ```python
-name = 'yolov8s.pt'
+name = '1_0212_train'
 model= 'yolov8s.pt'
 epochs = 300
 imgsz = 1504
@@ -32,6 +32,10 @@ batch_size = 8
 # 第二次
 使用yolov8n迁移训练
 
+yolov8n.pt
+
+模型文件名：2_0228_train
+
 ```python
 name = '2_0228_train'
 model= 'yolov8n.pt'
@@ -45,9 +49,12 @@ batch_size = 8
 # 第三次
 新建全新的yolov8n训练
 
+yolov8.yaml
+
+模型文件名：3_0229_train
 ```python
 name = '3_0229_train'
-model= 'yolov8n.pt'
+model= 'yolov8.yaml'
 epochs = 1000
 imgsz = 1504
 batch_size = 8
@@ -58,6 +65,9 @@ batch_size = 8
 # 第四次
 采用yolov8n迁移训练，在接下来的几次训练中会依次训练修改imgsz之后，对模型的影响，并对比
 
+yolov8n.pt
+
+模型文件名：4_0301_train
 ```python
 name = '4_0301_train'
 model= 'yolov8n.pt'
@@ -71,6 +81,9 @@ batch_size = 32
 # 第五次
 采用yolov8n迁移训练，imgsz变化
 
+yolov8n.pt
+
+模型文件名：5_0302_train
 ```python
 name = '5_0302_train'
 model= 'yolov8n.pt'
@@ -84,6 +97,9 @@ batch_size = 16
 # 第六次
 采用yolov8n迁移训练，imgsz变化
 
+yolov8n.pt
+
+模型文件名：6_0302_train
 ```python
 name = '6_0302_train'
 model= 'yolov8n.pt'
@@ -97,6 +113,9 @@ batch_size = 16
 # 第七次
 在头部采取了DCN替代了传统的Conv，替换head.py中的网络结构
 
+yolov8n.pt
+
+模型文件名：7_0317_train
 ```python
 name = '7_0317_train'
 model= 'yolov8n.pt'
@@ -132,7 +151,7 @@ batch_size = 8
 
 yolov8n_my_v2.yaml
 
-模型文件名：8_0412_train
+模型文件名：9_0412_train
 ```python
 name = '9_0412_train'
 model='yolov8n_my_v2.yaml'
@@ -150,7 +169,7 @@ batch_size = 8
 
 yolov8n_my_v3.yaml
 
-模型文件名：8_0412_train
+模型文件名：10_0413_train
 ```python
 name = '10_0413_train'
 model='yolov8n_my_v3.yaml'
@@ -159,7 +178,7 @@ imgsz = 640
 batch_size = 8
 ```
 
-训练结果：在280轮时停止训练
+训练结果：在359轮时停止训练
 
 结论：
 
