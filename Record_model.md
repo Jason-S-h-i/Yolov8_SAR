@@ -182,6 +182,26 @@ batch_size = 8
 
 结论：
 
+# 第十一次
+在此次和接下来的几次训练中，将尝试使用不同的IoU进行模型训练
+
+此次使用的loss为CIoU
+
+yolov8n_my.yaml
+
+模型文件名：11_0415_train
+```python
+name = '11_0415_train'
+model='yolov8n_my.yaml'
+epochs = 700
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：
+
+结论：
+
 # 添加模块方法
 在ultralytics/nn/modules对应的文件下加入模块，以block为例。
 

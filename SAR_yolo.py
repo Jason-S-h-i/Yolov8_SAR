@@ -12,13 +12,13 @@ epochs
 batch_size
 '''
 
-mode_val = True
+mode_val = False
 project = 'runs'  # 保存训练的输出
-train_name = 'detect\\10_0413_train'  # project下的子文件夹 保存logs和训练的输出
-val_name = 'detect\\10_0413_val'  # project下的子文件夹 保存logs和训练的输出
+train_name = 'detect\\11_0415_train'  # project下的子文件夹 保存logs和训练的输出
+val_name = 'detect\\11_0415_val'  # project下的子文件夹 保存logs和训练的输出
 train_model_path = '..\\model\\yolov8n.pt'  # transfer
 val_model_path = '.\\' + project + '\\' + train_name + '\\weights\\best.pt'
-train_model = './ultralytics/cfg/models/v8/yolov8n_my_v3.yaml'  # origin
+train_model = './ultralytics/cfg/models/v8/yolov8n_my.yaml'  # origin
 epochs = 700
 imgsz = 640
 batch_size = 8
