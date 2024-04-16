@@ -198,7 +198,43 @@ imgsz = 640
 batch_size = 8
 ```
 
-训练结果：
+训练结果：在608轮时停止训练
+
+结论：
+
+# 第十二次
+此次使用的loss为DIoU
+
+yolov8n_my.yaml
+
+模型文件名：12_0416_train
+```python
+name = '12_0416_train'
+model='yolov8n_my.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：在511轮时停止训练
+
+结论：
+
+# 第十三次
+此次使用的loss为GIoU
+
+yolov8n_my.yaml
+
+模型文件名：13_0417_train
+```python
+name = '13_0417_train'
+model='yolov8n_my.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：在   轮时停止训练
 
 结论：
 
