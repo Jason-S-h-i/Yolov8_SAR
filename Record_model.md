@@ -252,18 +252,18 @@ imgsz = 640
 batch_size = 8
 ```
 
-训练结果：在   轮时停止训练
+训练结果：在583轮时停止训练
 
 结论：
 
 # 第十五次
-此次使用的loss为WIoU
+此次使用的loss为WIoU-V3
 
 yolov8n_my.yaml
 
-模型文件名：15__train
+模型文件名：15_0418_train
 ```python
-name = '15__train'
+name = '15_0418_train'
 model='yolov8n_my.yaml'
 epochs = 1000
 imgsz = 640

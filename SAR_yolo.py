@@ -14,8 +14,8 @@ batch_size
 
 mode_val = False
 project = 'runs'  # 保存训练的输出
-train_name = 'detect\\14_0417_train'  # project下的子文件夹 保存logs和训练的输出
-val_name = 'detect\\14_0417_val'  # project下的子文件夹 保存logs和训练的输出
+train_name = 'detect\\15_0418_train'  # project下的子文件夹 保存logs和训练的输出
+val_name = 'detect\\15_0418_val'  # project下的子文件夹 保存logs和训练的输出
 train_model_path = '..\\model\\yolov8n.pt'  # transfer
 val_model_path = '.\\' + project + '\\' + train_name + '\\weights\\best.pt'
 train_model = './ultralytics/cfg/models/v8/yolov8n_my.yaml'  # origin
@@ -33,12 +33,12 @@ if __name__ == "__main__":  # 多进程要放入main函数中
     # 加载预训练的YOLO模型（推荐用于训练）
     train_model = YOLO(train_model)
     # 训练模型
-    results = train_model.train(data='SAR-AIRcraft-1.0-test.yaml', epochs=epochs, batch=batch_size, imgsz=imgsz, device=0,
+    results = train_model.train(data='SAR-AIRcraft-1.0-yolo.yaml', epochs=epochs, batch=batch_size, imgsz=imgsz, device=0,
                           save_period=save_period, project=project, name=train_name, plots=True, verbose=False)
     if mode_val:
         val_model = YOLO(val_model_path)
         # 评估模型在验证集上的性能
-        val_results = val_model.val(data='SAR-AIRcraft-1.0-test.yaml', batch=batch_size, imgsz=imgsz, iou=0.7, conf=0.2,
+        val_results = val_model.val(data='SAR-AIRcraft-1.0-yolo.yaml', batch=batch_size, imgsz=imgsz, iou=0.7, conf=0.2,
                                     device=0, project=project, name=val_name, plots=True, split='test', half=False)
 
 
