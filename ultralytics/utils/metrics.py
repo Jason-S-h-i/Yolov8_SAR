@@ -81,7 +81,7 @@ class WIoU_Scale:
         momentum: The momentum of running mean'''
 
     iou_mean = 1.
-    monotonous = False  # 调整WIoU的版本
+    monotonous = None  # 调整WIoU的版本
     _momentum = 1 - 0.5 ** (1 / 7000)
     _is_train = True
 

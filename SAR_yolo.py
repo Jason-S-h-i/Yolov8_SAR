@@ -14,8 +14,8 @@ batch_size
 
 mode_val = False
 project = 'runs'  # 保存训练的输出
-train_name = 'detect\\15_0418_train'  # project下的子文件夹 保存logs和训练的输出
-val_name = 'detect\\15_0418_val'  # project下的子文件夹 保存logs和训练的输出
+train_name = 'detect\\17_0419_train'  # project下的子文件夹 保存logs和训练的输出
+val_name = 'detect\\17_0419_val'  # project下的子文件夹 保存logs和训练的输出
 train_model_path = '..\\model\\yolov8n.pt'  # transfer
 val_model_path = '.\\' + project + '\\' + train_name + '\\weights\\best.pt'
 train_model = './ultralytics/cfg/models/v8/yolov8n_my.yaml'  # origin
