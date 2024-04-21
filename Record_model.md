@@ -310,6 +310,60 @@ batch_size = 8
 
 结论：
 
+# 第十八次
+此次使用的loss为IoU，做对照实验
+
+yolov8n_my.yaml
+
+模型文件名：18_0420_train
+```python
+name = '18_0420_train'
+model='yolov8n_my.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：在594轮时停止训练
+
+结论：
+
+# 第十九次
+此次使用的loss为SIoU
+
+yolov8n_my.yaml
+
+模型文件名：19_0420_train
+```python
+name = '19_0420_train'
+model='yolov8n_my.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：在327轮时停止训练
+
+结论：
+
+# 第二十次
+此次使用的loss为FocalEIoU
+
+yolov8n_my.yaml
+
+模型文件名：20_0420_train
+```python
+name = '20_0420_train'
+model='yolov8n_my.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：在380轮时停止训练
+
+结论
+
 # 添加模块方法
 在ultralytics/nn/modules对应的文件下加入模块，以block为例。
 
