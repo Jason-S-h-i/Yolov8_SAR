@@ -364,6 +364,60 @@ batch_size = 8
 
 结论
 
+# 第二十一次
+loss=CIoU，去掉SPPF作为对比
+
+yolov8n_my_v4.yaml
+
+模型文件名：21_0422_train
+```python
+name = '21_0422_train'
+model='yolov8n_my_v4.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：在280轮时停止训练
+
+结论
+
+# 第二十二次
+loss=CIoU，去掉SPPF，在backbone的c2f后加上SA
+
+yolov8n_my_v5.yaml
+
+模型文件名：22_0422_train
+```python
+name = '22_0422_train'
+model='yolov8n_my_v4.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：在663轮时停止训练
+
+结论
+
+# 第二十三次
+loss=CIoU，在backbone的c2f后加上SA，最后一个SA换回SPPF
+
+yolov8n_my_v6.yaml
+
+模型文件名：23_0423_train
+```python
+name = '23_0423_train'
+model='yolov8n_my_v6.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+
+训练结果：在   轮时停止训练
+
+结论
+
 # 添加模块方法
 在ultralytics/nn/modules对应的文件下加入模块，以block为例。
 

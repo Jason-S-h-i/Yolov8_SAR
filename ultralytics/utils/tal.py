@@ -124,7 +124,7 @@ class TaskAlignedAssigner(nn.Module):
     # 使用Wise-IoU时，就只用Iou，即全为False
     def iou_calculation(self, gt_bboxes, pd_bboxes):
         """Iou calculation for horizontal bounding boxes."""
-        return bbox_iou(gt_bboxes, pd_bboxes, xywh=False).squeeze(-1).clamp_(0)
+        return bbox_iou(gt_bboxes, pd_bboxes, xywh=False, CIoU=True).squeeze(-1).clamp_(0)
 
     def select_topk_candidates(self, metrics, largest=True, topk_mask=None):
         """

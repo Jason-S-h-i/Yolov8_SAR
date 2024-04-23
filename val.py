@@ -11,8 +11,8 @@ import numpy as np
 
 project = 'runs'  # 保存训练的输出
 # laptop result ; desktop detect
-train_name = 'detect\\10_0413_train'
-val_name = 'detect\\10_0413_val'
+train_name = 'detect\\22_0422_train'
+val_name = 'detect\\22_0422_val'
 val_model_path = '.\\' + project + '\\' + train_name + '\\weights\\best.pt'
 
 imgsz = 640
