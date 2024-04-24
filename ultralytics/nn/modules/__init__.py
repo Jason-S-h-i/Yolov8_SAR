@@ -37,6 +37,8 @@ from .block import (
     RepC3,
     ResNetLayer,
     SA,
+    DCB,
+    DCB_SA,
 )
 from .conv import (
     CBAM,
@@ -116,4 +118,6 @@ __all__ = (
     "ResNetLayer",
     "OBB",
     "SA",
+    "DCB",
+    "DCB_SA",
 )

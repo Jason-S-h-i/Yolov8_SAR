@@ -29,6 +29,8 @@ __all__ = (
     "RepC3",
     "ResNetLayer",
     "SA",
+    "DCB",
+    "DCB_SA",
 )
 
 
@@ -448,3 +450,36 @@ class SA(nn.Module):
         out = self.channel_shuffle(out, 2)
 
         return out
+
+
+class DCB(nn.Module):
+    """Dilated Conv Blaock"""
+
+    def __init__(self, c1):
+        super().__init__()
+        self.c = c1 // 4
+        # padding = dilation
+        self.cv1 = nn.Conv2d(c1, self.c, 1, 1)
+        self.cv2 = nn.Conv2d(c1, self.c, 3, 1, padding=3, dilation=3)
+        self.cv3 = nn.Conv2d(c1, self.c, 3, 1, padding=5, dilation=5)
+        self.cv4 = nn.Conv2d(c1, self.c, 3, 1, padding=7, dilation=7)
+
+    def forward(self, x):
+        dcb1 = self.cv1(x)
+        dcb2 = self.cv2(x)
+        dcb3 = self.cv3(x)
+        dcb4 = self.cv3(x)
+        return torch.cat([dcb1, dcb2, dcb3, dcb4], dim=1)
+
+class DCB_SA(nn.Module):
+    """Dilated Conv Blaock"""
+
+    def __init__(self, c, g=64):
+        super().__init__()
+        self.dcb = DCB(c)
+        self.sa = SA(c, g=64)
+
+    def forward(self, x):
+        return self.sa(self.dcb(x))
+
+

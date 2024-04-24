@@ -41,6 +41,8 @@ from ultralytics.nn.modules import (
     RTDETRDecoder,
     Segment,
     SA,
+    DCB,
+    DCB_SA,
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -861,8 +863,8 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
                 args[2] = make_divisible(min(args[2], max_channels) * width, 8)
         elif m is RTDETRDecoder:  # special case, channels arg must be passed in index 1
             args.insert(1, [ch[x] for x in f])
-        elif m is SA:
-            args = [ch[f], *args]
+        elif m in (SA, DCB, DCB_SA):
+            args = [ch[f], *args]  # ch[f]为输入通道数
         else:
             c2 = ch[f]
 
