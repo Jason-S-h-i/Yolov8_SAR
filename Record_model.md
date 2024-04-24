@@ -396,7 +396,7 @@ imgsz = 640
 batch_size = 8
 ```
 
-训练结果：在663轮时停止训练
+训练结果：在447轮时停止训练
 
 结论
 
@@ -413,8 +413,47 @@ epochs = 1000
 imgsz = 640
 batch_size = 8
 ```
+参数量：233 layers, 3012231 parameters, 3012215 gradients, 8.2 GFLOPs
 
-训练结果：在   轮时停止训练
+训练结果：在731轮时停止训练
+
+结论
+
+# 第二十四次
+loss=CIoU，sppf改为dcb+sa
+
+yolov8n_my_v7.yaml
+
+模型文件名：24_0424_train
+```python
+name = '24_0424_train'
+model='yolov8n_my_v7.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+参数量：
+
+训练结果：在 轮时停止训练
+
+结论
+
+# 第二十五次
+loss=CIoU，学习SE模块改造c2f
+
+yolov8n_my_v7.yaml
+
+模型文件名：24_0424_train
+```python
+name = '25_0424_train'
+model='yolov8n_my_v8.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+参数量：
+
+训练结果：在 轮时停止训练
 
 结论
 
