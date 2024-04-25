@@ -41,6 +41,7 @@ from .block import (
     DCB_SA,
     SA_Bottleneck,
     C2f_SA,
+    C2f_Ghost,
 )
 from .conv import (
     CBAM,
@@ -124,4 +125,5 @@ __all__ = (
     "DCB_SA",
     "SA_Bottleneck",
     "C2f_SA",
+    "C2f_Ghost",
 )

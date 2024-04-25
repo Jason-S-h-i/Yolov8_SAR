@@ -45,6 +45,7 @@ from ultralytics.nn.modules import (
     DCB_SA,
     SA_Bottleneck,
     C2f_SA,
+    C2f_Ghost,
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -824,6 +825,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             RepC3,
             SA_Bottleneck,
             C2f_SA,
+            C2f_Ghost,
         ):
             c1, c2 = ch[f], args[0]
             """
@@ -844,7 +846,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
             *表示将这些元素解包并直接插入到新列表中
             传入参数的手段，后面很多的都类似
             """
-            if m in (BottleneckCSP, C1, C2, C2f, C3, C3TR, C3Ghost, C3x, RepC3, C2f_SA):
+            if m in (BottleneckCSP, C1, C2, C2f, C3, C3TR, C3Ghost, C3x, RepC3, C2f_SA, C2f_Ghost):
                 args.insert(2, n)  # number of repeats
                 n = 1
         elif m is AIFI:
