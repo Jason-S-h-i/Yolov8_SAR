@@ -484,16 +484,145 @@ yolov8n_my_v10.yaml
 模型文件名：27_0425_train
 ```python
 name = '27_0425_train'
-model='27_0425_train.yaml'
+model='yolov8n_my_v10.yaml'
 epochs = 1000
 imgsz = 640
 batch_size = 8
 ```
-参数量：
+参数量：315 layers, 2938621 parameters, 2938605 gradients, 7.6 GFLOPs
 
-训练结果：在 轮时停止训练
+训练结果：在443轮时停止训练
 
 结论
+
+# 第二十八次
+loss=CIoU，c2f_sa+dcb_sa
+
+yolov8n_my_v11.yaml
+
+模型文件名：28_0426_train
+```python
+name = '28_0426_train'
+model='yolov8n_my_v11.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+参数量：231 layers, 3306637 parameters, 3306621 gradients, 8.4 GFLOPs
+
+训练结果：在597轮时停止训练
+
+结论：dcb_sa别用了
+
+# 第二十九次
+loss=CIoU，
+
+c2f_sa+dcb_sa
+
+yolov8n_my_v12.yaml
+
+模型文件名：29_0426_train
+```python
+name = '29_0426_train'
+model='yolov8n_my_v12.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+参数量：247 layers, 3306661 parameters, 3306645 gradients, 8.4 GFLOPs
+
+训练结果：在637轮时停止训练
+
+结论
+
+# 第三十次
+loss=CIoU，
+
+c2f_sa+dcb_sa
+
+yolov8n_my_v13.yaml
+
+模型文件名：30_0426_train
+```python
+name = '30_0426_train'
+model='yolov8n_my_v13.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+参数量：255 layers, 3216901 parameters, 3216885 gradients, 8.3 GFLOPs
+
+训练结果：在343轮时停止训练
+
+结论
+
+# 重大错误
+由于个人认知问题，没有保证对比实验的准确性，
+
+实际上只要保证在每次训练时，epochs和其他的参数一致即可。
+
+之前的验证的参数均为跑到最优时的参数。
+
+对接下来实验进行规划：
+
+网络改进部分（loss=CIoU）_第一部分_
+1. baseline
+2. 迁移baseline。训练完之后马上比较，看哪个在验证集上表现好，后面就用哪个
+3. no sppf
+4. sppf->dcb_sa
+5. backbone c2f->c2f_sa
+6. backbone c2f_sa+dcb_sa
+7. neck conv->ghost
+8. neck c2f->c2f_ghost
+9. neck dcb_sa+c2f_ghost
+
+损失函数改进部分  _第二部分_
+1. GIoU
+2. CIoU
+3. DIoU
+4. EIoU
+5. WIoU-v1
+6. WIoU-v2
+7. WIoU-v3
+8. SIoU
+9. FocalEIoU
+看哪个效果最好就挑哪个，其他挑选大约3-4个
+
+# No.31
+
+重大错误1.1 baseline
+
+```python
+name = '31_0427_train'
+model='yolov8n_my.yaml'
+# 不变参数
+batch_size = 16
+epochs = 300
+imgsz = 640
+lr0=0.01
+lrf=0.01
+optimizer=SGD
+weight_decay = 0.0005
+```
+参数量：
+
+# No.31
+
+重大错误1.2 迁移baseline
+
+```python
+name = '32_0427_train'
+model='yolov8n.pt'
+# 不变参数
+batch_size = 16
+epochs = 300
+imgsz = 640
+lr0=0.01
+lrf=0.01
+optimizer=SGD
+weight_decay = 0.0005
+```
+参数量：
 
 # 添加模块方法
 在ultralytics/nn/modules对应的文件下加入模块，以block为例。
