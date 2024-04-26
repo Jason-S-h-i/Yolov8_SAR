@@ -432,21 +432,59 @@ epochs = 1000
 imgsz = 640
 batch_size = 8
 ```
-参数量：
+参数量：227 layers, 3306625 parameters, 3306609 gradients, 8.4 GFLOPs
 
-训练结果：在 轮时停止训练
+训练结果：在583轮时停止训练
 
 结论
 
 # 第二十五次
-loss=CIoU，学习SE模块改造c2f
+loss=CIoU，学习SE模块改造c2f，生成c2f_sa
 
 yolov8n_my_v7.yaml
 
-模型文件名：24_0424_train
+模型文件名：25_0424_train
 ```python
 name = '25_0424_train'
 model='yolov8n_my_v8.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+参数量：245 layers, 3012249 parameters, 3012233 gradients, 8.2 GFLOPs
+
+训练结果：在564轮时停止训练
+
+结论
+
+# 第二十六次
+loss=CIoU，c2f_sa+dcb_sa+sppf
+
+yolov8n_my_v9.yaml
+
+模型文件名：26_0425_train
+```python
+name = '26_0425_train'
+model='yolov8n_my_v9.yaml'
+epochs = 1000
+imgsz = 640
+batch_size = 8
+```
+参数量：255 layers, 3471269 parameters, 3471253 gradients, 8.6 GFLOPs
+
+训练结果：在709轮时停止训练
+
+结论：负优化
+
+# 第二十七次
+loss=CIoU，c2f_sa+ghostconv+c2f_ghost
+
+yolov8n_my_v10.yaml
+
+模型文件名：27_0425_train
+```python
+name = '27_0425_train'
+model='27_0425_train.yaml'
 epochs = 1000
 imgsz = 640
 batch_size = 8
